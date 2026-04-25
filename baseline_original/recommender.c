@@ -72,25 +72,37 @@ void recommender(int uid){
     double *centroids = (double *)malloc(sizeof(double) * k);
 	int *cluster_assignment = (int *)malloc(sizeof(int) * No_of_users); //which cluster does the user belong in
 
-	// choose intial centroids at random from dataset(similarity) for clustering to find most similar users
-
-	//printf("Initial centroids\n");
+	// choose initial centroids using unique random indices to avoid long retry loops
+	int *chosen_indices = (int *)calloc(No_of_users, sizeof(int));
+	if (chosen_indices == NULL) {
+		free(utility_matrix);
+		free(movienames);
+		free(moviegenres);
+		free(normalized_matrix);
+		free(newuser);
+		free(normalizednewuser);
+		free(similarity);
+		free(centroids);
+		free(cluster_assignment);
+		return;
+	}
 	for(i=0;i<k;i++){
-		int n = rand()%No_of_users; //choosing random index
-		int m=0, flag=0;
-		for(m=0;m<i;m++){
-			if(similarity[n] == centroids[m]){ //to check weather we have already chosen that centroid
-				flag=1;
-				break;
+		int n = rand()%No_of_users;
+		int attempts = 0;
+		while (chosen_indices[n] && attempts < (No_of_users * 2)) {
+			n = rand()%No_of_users;
+			attempts++;
+		}
+		if (chosen_indices[n]) {
+			n = i % No_of_users;
+			while (chosen_indices[n]) {
+				n = (n + 1) % No_of_users;
 			}
 		}
-		if(flag==1){ //if already chosen then choose again
-			i--;
-			continue;
-		}
-		centroids[i] = similarity[n]; //setting the centroids according to random index generated
-		//printf("%lf\n",centroids[i]);
+		chosen_indices[n] = 1;
+		centroids[i] = similarity[n];
 	}
+	free(chosen_indices);
 	kmeans(1,similarity,No_of_users,k,centroids,cluster_assignment); //clustering of similarity to find most similar users
 
 	int *similar_users = malloc(sizeof(int) * No_of_users);
