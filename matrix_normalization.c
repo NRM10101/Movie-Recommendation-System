@@ -14,6 +14,9 @@ double calc_average(double *utility_matrix,int No_of_movies){ //inputs: utility 
 			sum += utility_matrix[i]; //add to total sum
 		}
 	}
+	if(count == 0){
+		return 0.0;
+	}
 	return average = sum/count;
 }
 
@@ -44,6 +47,12 @@ void normalize(double *user, double *normalizeduser, int No_of_movies){ //inputs
 			sum += user[i];
 			count++;
 		}
+	}
+	if(count == 0){
+		for(i=0;i<No_of_movies;i++){
+			normalizeduser[i] = 0;
+		}
+		return;
 	}
 	average = sum/count;
 	

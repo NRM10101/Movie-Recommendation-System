@@ -1,16 +1,40 @@
 //contains sorting
-void sort(int *recommended_movies, double *predicted_ratings, int no_of_recommended_movies){
-	int i=0,j=0;
-	
-	//sorting recommended movies and their ratings from highest rating to lowest
-	for(i=0;i<no_of_recommended_movies;i++){
-		for(j=i+1;j<no_of_recommended_movies;j++){
-			if(predicted_ratings[i]<predicted_ratings[j]){
-				double temp1; int temp2;
-				temp1 = predicted_ratings[i]; temp2 = recommended_movies[i];
-				predicted_ratings[i] = predicted_ratings[j]; recommended_movies[i] = recommended_movies[j];
-				predicted_ratings[j] = temp1; recommended_movies[j] = temp2;
-			}
-		}
+#include<stdlib.h>
+
+typedef struct {
+	int movie;
+	double rating;
+} Recommendation;
+
+static int compare_recommendations(const void *a, const void *b){
+	const Recommendation *lhs = (const Recommendation *)a;
+	const Recommendation *rhs = (const Recommendation *)b;
+	if(lhs->rating < rhs->rating){
+		return 1;
 	}
+	if(lhs->rating > rhs->rating){
+		return -1;
+	}
+	return 0;
+}
+
+void sort(int *recommended_movies, double *predicted_ratings, int no_of_recommended_movies){
+	int i = 0;
+	Recommendation *items = (Recommendation *)malloc(sizeof(Recommendation) * no_of_recommended_movies);
+	if(items == NULL){
+		return;
+	}
+
+	for(i = 0; i < no_of_recommended_movies; i++){
+		items[i].movie = recommended_movies[i];
+		items[i].rating = predicted_ratings[i];
+	}
+
+	qsort(items, no_of_recommended_movies, sizeof(Recommendation), compare_recommendations);
+
+	for(i = 0; i < no_of_recommended_movies; i++){
+		recommended_movies[i] = items[i].movie;
+		predicted_ratings[i] = items[i].rating;
+	}
+	free(items);
 }
