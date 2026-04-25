@@ -13,16 +13,22 @@ double pearson_correlation(double *A, double *B, unsigned int size){
         mag_a += A[i]*A[i];
         mag_b += B[i]*B[i];
     }
-    if(mag_a == 0.0 || mag_b == 0.0){
-        return 0.0;
-    }
     return dot_p/(sqrt(mag_a)*sqrt(mag_b));
 }
 
 void calc_similarity(double *normalizeduser, double *normalized_matrix, double *similarity, int No_of_users, int No_of_movies){
-	int i=0;
+	int i=0,j=0;
 	for(i=0;i<No_of_users;i++){ //traverse through each user
+		double *A;
+		A = (double *)malloc(sizeof(double) * No_of_movies);
+		
+		//get rating vector for that user
+		for(j=0; j<No_of_movies; j++){
+			A[j] = normalized_matrix[i*No_of_movies + j];
+		}
+		
 		//find similarity between new user and ith user
-		similarity[i] = pearson_correlation(normalizeduser,&normalized_matrix[i*No_of_movies],No_of_movies);
+		similarity[i] = pearson_correlation(normalizeduser,A,No_of_movies);
+		free(A);
 	}
 }
