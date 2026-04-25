@@ -34,4 +34,14 @@ void new_user_movies(
                      int uid
                      );
 
+void extract_user_movies_from_matrix(
+						double *newuser,
+
+						double *utility_matrix,
+
+						int uid,
+
+						int No_of_movies
+						);
+
 #endif

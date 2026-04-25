@@ -20,8 +20,6 @@ void get_movie_names(char *movienames, char *s){
 		i++;j=0;
 	}
 	fclose(fstream);
-	free(line);
-	free(record);
 }
 
 void get_movie_genres(char *moviegenres, char *s){
@@ -41,8 +39,6 @@ void get_movie_genres(char *moviegenres, char *s){
 		i++;j=0;
 	}
 	fclose(fstream);
-	free(line);
-	free(record);
 }
 
 void get_utility_matrix(double *utility_matrix, char *s, int No_of_movies, int No_of_users, int uid){
@@ -71,8 +67,6 @@ void get_utility_matrix(double *utility_matrix, char *s, int No_of_movies, int N
 		k=0;
 	}
 	fclose(fstream);
-	free(line);
-	free(record);
 }
 
 void new_user_movies(double *newuser, char *s, int uid){
@@ -100,6 +94,12 @@ void new_user_movies(double *newuser, char *s, int uid){
 		k=0;
 	}
 	fclose(fstream);
-	free(line);
-	free(record);
+}
+
+void extract_user_movies_from_matrix(double *newuser, double *utility_matrix, int uid, int No_of_movies){
+	int movie = 0;
+	int user_index = uid - 1;
+	for(movie = 0; movie < No_of_movies; movie++){
+		newuser[movie] = utility_matrix[user_index * No_of_movies + movie];
+	}
 }
